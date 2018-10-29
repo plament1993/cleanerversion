@@ -52,6 +52,10 @@ class VersionedForeignKey(ForeignKey):
         :return: SQL conditional statement
         :rtype: WhereNode
         """
+        # do not restrict versions for non-versionable models
+        if not isinstance(self.model, Versionable):
+            return None
+
         historic_sql = '''{alias}.version_start_date <= %s
                             AND ({alias}.version_end_date > %s
                                 OR {alias}.version_end_date is NULL )'''
